@@ -11,7 +11,7 @@ import ru.kata.spring.boot_security.demo.service.ServiceUser;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/people")
+@RequestMapping("/admin")
 public class UserController {
 
     private final ServiceUser serviceUser;
@@ -23,19 +23,19 @@ public class UserController {
     @GetMapping()
     public String snowDbUsers(Model model) {
         model.addAttribute("users", serviceUser.userShow());
-        return "people/show";
+        return "admin/show";
     }
     @GetMapping("/add")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        return "people/add";
+        return "admin/add";
     }
     @PostMapping()
     public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
-            return "people/add";
+            return "admin/add";
         serviceUser.add(user);
-        return "redirect:/people";
+        return "redirect:/admin";
     }
     @GetMapping("edit/{id}")
     public String editUser(@PathVariable("id") int id, Model model) {

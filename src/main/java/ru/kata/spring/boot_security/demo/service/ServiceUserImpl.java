@@ -19,7 +19,6 @@ public class ServiceUserImpl implements ServiceUser {
         this.userDao = userDao;
     }
 
-
     @Override
     public List<User> userShow() {
         return userDao.userShow();

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Редактирование пользователя</title>
+    <title>Создание нового пользователя</title>
     <style>
         form {
             line-height: 1.7;
@@ -10,8 +10,8 @@
     </style>
 </head>
 <body>
-<h2>Редактирование пользователя</h2>
-<form th:method="PATCH" th:action="@{/people/{id}(id=${user.getId()})}" th:object="${user}">
+<h2>Добавление в БД нового пользователя</h2>
+<form th:method="POST" th:action="@{/admin}" th:object="${user}">
     <label for="name">Введите имя</label>
     <input type="text" th:field="*{name}" id="name"/>
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors = "*{name}">Name error</div>
@@ -20,7 +20,11 @@
     <input type="text" th:field="*{lastname}" id="lastname"/>
     <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors = "*{lastname}">LastName error</div>
     <br/>
-    <label for="age">Введите возвраст</label>
+    <label for="password">Введите пароль</label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors = "*{password}">Password error</div>
+    <br/>
+    <label for="age">Введите возраст</label>
     <input type="number" th:field="*{age}" id="age"/>
     <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors = "*{age}">Age error</div>
     <br/>
@@ -28,7 +32,7 @@
     <input type="text" th:field="*{email}" id="email"/>
     <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
     <br/>
-    <input type="submit" value="Обновить пользователя!">
+    <input type="submit" value="Создать нового пользователя!">
 </form>
 </body>
 </html>
