@@ -17,5 +17,6 @@ public interface ServiceUser {
     void delete(int id);
 
     User findUser(int id);
+    User findUserName(String email);
 
 }

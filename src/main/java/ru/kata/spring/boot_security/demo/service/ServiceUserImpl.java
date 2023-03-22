@@ -46,4 +46,9 @@ public class ServiceUserImpl implements ServiceUser {
     public User findUser(int id) {
         return userDao.findUser(id);
     }
+
+    @Override
+    public User findUserName(String email) {
+        return userDao.findUserName(email);
+    }
 }

@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**", "/user/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                // форма для записи логина( почты) и пароля
+                // форма для записи логина(почты) и пароля
                 .formLogin()
                 .loginPage("/login/login")
                 .loginProcessingUrl("/login/login")
