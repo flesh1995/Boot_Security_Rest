@@ -14,6 +14,8 @@ public interface ServiceUser {
 
     void add(@Valid User user);
 
+    void save(User user);
+
     void delete(int id);
 
     User findUser(int id);

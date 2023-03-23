@@ -11,8 +11,8 @@ import ru.kata.spring.boot_security.demo.DAO.UserDao;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,14 +23,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userDao.findUserName(name);
-
-        Set<GrantedAuthority> grantedAuthoritySet = new HashSet<>();
-
-        for (Role role : user.getRoles()) {
-            grantedAuthoritySet.add(new SimpleGrantedAuthority(role.getName()));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userDao.findUserName(email);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("User '%s' not found", email));
         }
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), grantedAuthoritySet);
+        return user;
     }
 }

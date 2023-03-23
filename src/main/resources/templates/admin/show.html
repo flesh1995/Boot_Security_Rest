@@ -15,6 +15,7 @@
                 <th width="100">LastName</th>
                 <th width="50">Age</th>
                 <th width="150">Email</th>
+                <th width="150">Password</th>
                 <th width="50">EDIT</th>
                 <th width="50">DELETE</th>
             </tr>
@@ -24,6 +25,7 @@
                 <td th:utext="${user.lastname}"></td>
                 <td th:utext="${user.age}"></td>
                 <td th:utext="${user.email}"></td>
+                <td th:utext="${user.password}"></td>
                 <td><form th:action="@{/admin/edit/{id}(id=${user.getId()})}">
                     <input type="submit" value="Edit user">
                     </form>
@@ -40,6 +42,7 @@
         </form>
         </br>
     </div>
+    <a href="/logout"> Разлогиниться</a>
 </body>
 </html>
 

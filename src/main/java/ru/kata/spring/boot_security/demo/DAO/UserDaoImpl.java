@@ -30,6 +30,12 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
+    public void save(User user) {
+        entityManager.persist(user);
+        entityManager.flush();
+    }
+
+    @Override
     public void delete(int id) {
         User user = entityManager.find(User.class, id);
         entityManager.remove(user);

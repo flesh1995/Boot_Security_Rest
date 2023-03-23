@@ -33,6 +33,8 @@
     <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
     <br/>
     <input type="submit" value="Создать нового пользователя!">
+
+    <a href="/logout"> Разлогиниться</a>
 </form>
 </body>
 </html>

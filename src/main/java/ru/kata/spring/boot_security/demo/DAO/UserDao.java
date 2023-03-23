@@ -10,6 +10,8 @@ public interface UserDao {
 
     void add(User user);
 
+    void save(User user);
+
     void delete(int id);
 
     User findUser(int id);

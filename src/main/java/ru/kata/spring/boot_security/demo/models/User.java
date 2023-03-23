@@ -16,6 +16,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int id;
     @NotEmpty(message = "Это поле не должно быть пустым")
     @Size(min = 2, max = 30, message = "Слишком длинное имя")
@@ -37,21 +38,21 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
     public User() {
     }
 
-    public User(int id, String name, String lastname, int age, String email, String password, Set<Role> roles) {
+    public User(int id, String name, String lastname, int age, String email, String password) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
         this.age = age;
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        //this.roles = roles;
     }
 
     public int getId() {
@@ -119,7 +120,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        return roles;
     }
 
     @Override
