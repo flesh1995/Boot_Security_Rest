@@ -11,10 +11,10 @@
 </head>
 <body>
 <h2>Регистрация нового пользователя</h2>
-<form th:method="POST" th:action="@{/login/registration}" th:object="${user}">
-    <label for="name">Введите имя</label>
-    <input type="text" th:field="*{name}" id="name"/>
-    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors = "*{name}">Name error</div>
+<form th:method="POST" th:action="@{/form/registration}" th:object="${user}">
+    <label for="userName">Введите имя</label>
+    <input type="text" th:field="*{userName}" id="userName"/>
+    <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors = "*{userName}">Name error</div>
     <br/>
     <label for="lastname">Введите фамилию</label>
     <input type="text" th:field="*{lastname}" id="lastname"/>
@@ -32,6 +32,9 @@
     <input type="text" th:field="*{email}" id="email"/>
     <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
     <br/>
+    <div th:if="${param.error}" style="color: red">
+        Неправильная почта и пароль
+    </div>
     <input type="submit" value="Зарегистрировать нового пользователя!">
 </form>
 </body>

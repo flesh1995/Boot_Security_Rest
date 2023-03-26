@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -9,7 +10,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -21,7 +24,7 @@ public class User implements UserDetails {
     @NotEmpty(message = "Это поле не должно быть пустым")
     @Size(min = 2, max = 30, message = "Слишком длинное имя")
     @Column(name = "name")
-    private String name;
+    private String userName;
     @NotEmpty(message = "Это поле не должно быть пустым")
     @Size(min = 2, max = 30, message = "Слишком длинная фамилия")
     @Column(name = "lastname")
@@ -37,24 +40,24 @@ public class User implements UserDetails {
     @Size(min = 4, message = "Password должен быть не менее 4-х символов")
     @Column(name = "password")
     private String password;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
     public User() {
     }
-
-    public User(int id, String name, String lastname, int age, String email, String password) {
+    public User(String userName, String lastname) {
+        this.userName = userName;
+        this.lastname = lastname;
+    }
+    public User(int id, String userName, String lastname, int age, String email, String password) {
         this.id = id;
-        this.name = name;
+        this.userName = userName;
         this.lastname = lastname;
         this.age = age;
         this.email = email;
         this.password = password;
-        //this.roles = roles;
     }
-
     public int getId() {
         return id;
     }
@@ -63,12 +66,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String name) {
+        this.userName = name;
     }
 
     public String getLastname() {
@@ -111,7 +114,7 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + userName + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
@@ -120,7 +123,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return  roles.stream().map(p->new SimpleGrantedAuthority(p.getName())).collect(Collectors.toList());
     }
 
     @Override
@@ -130,7 +133,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

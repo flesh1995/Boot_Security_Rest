@@ -23,31 +23,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.successUserHandler = successUserHandler;
         this.userDetailsService = userDetailsService;
     }
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                // отключение защиты
+                .csrf().disable()
                 // авторизация
                 .authorizeRequests()
-                .antMatchers("/login/login", "/login/registration", "/error").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/form/login", "/form/registration", "/error").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .and()
-
                 // форма для записи логина(почты) и пароля
                 .formLogin()
-                .loginPage("/login/login")
+                .loginPage("/form/login")
                 .loginProcessingUrl("/process_login")
-                .failureUrl("/login/login?error")
+                .failureUrl("/form/login?error")
                 .successHandler(successUserHandler)
                 .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login/login")
+                .logoutSuccessUrl("/form/login")
                 .permitAll();
     }
 

@@ -20,14 +20,14 @@ public class AdminController {
         this.serviceUser = serviceUser;
     }
 
+
     @GetMapping()
     public String snowDbUsers(Model model) {
         model.addAttribute("users", serviceUser.userShow());
         return "admin/show";
     }
     @GetMapping("/add")
-    public String newUser(Model model) {
-        model.addAttribute("user", new User());
+    public String newUser(@ModelAttribute("user") User user) {
         return "admin/add";
     }
     @PostMapping()
@@ -43,10 +43,10 @@ public class AdminController {
         return "admin/edit";
     }
     @PatchMapping("/{id}")
-    public String edit(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String edit(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors())
             return "admin/edit";
-        serviceUser.update(user);
+        serviceUser.update(id, user);
         return "redirect:/admin";
     }
     @DeleteMapping("/{id}")
