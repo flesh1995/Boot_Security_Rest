@@ -3,11 +3,13 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +41,7 @@ public class ServiceUserImpl implements ServiceUser {
     @Transactional
     public void registration(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Collections.singleton(new Role(2,"ROLE_USER")));
         userRepository.save(user);
     }
 
@@ -54,6 +57,7 @@ public class ServiceUserImpl implements ServiceUser {
     @Transactional
     public void add(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Collections.singleton(new Role(2, "ROLE_USER")));
         userRepository.save(user);
     }
 
