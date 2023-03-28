@@ -18,6 +18,7 @@
                 <th width="150">Password</th>
                 <th width="50">EDIT</th>
                 <th width="50">DELETE</th>
+                <th width="100">Roles</th>
             </tr>
             <tr th:each="user : ${users}">
                 <td th:utext="${user.id}"></td>
@@ -26,6 +27,9 @@
                 <td th:utext="${user.age}"></td>
                 <td th:utext="${user.email}"></td>
                 <td th:utext="${user.password}"></td>
+                <td><div th:each="role : ${user.getRoles()}">
+                    <div th:utext="${role.getName()}"></div>
+                </div></td>
                 <td><form th:action="@{/admin/edit/{id}(id=${user.getId()})}">
                     <input type="submit" value="Edit user">
                     </form>

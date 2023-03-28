@@ -14,8 +14,10 @@
                 <th width="100">Name</th>
                 <th width="100">LastName</th>
                 <th width="50">Age</th>
-                <th width="150">Email</th>
+                <th width="100">Email</th>
                 <th width="150">Password</th>
+                <th width="100">Roles</th>
+
             </tr>
             <tr>
                 <td th:utext="${user.id}"></td>
@@ -24,7 +26,10 @@
                 <td th:utext="${user.age}"></td>
                 <td th:utext="${user.email}"></td>
                 <td th:utext="${user.password}"></td>
-            </tr>
+                <td><div th:each="role : ${user.getRoles()}">
+                    <div th:utext="${role.getName()}"> </div>
+                </div></td>
+             </tr>
         </table>
     </div>
 

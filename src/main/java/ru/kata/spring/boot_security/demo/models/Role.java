@@ -59,4 +59,10 @@ public class Role implements GrantedAuthority {
         this.users = users;
     }
 
+    @Override
+    public String toString() {
+        return "Role{" +
+                "name_role='" + name_role + '\'' +
+                '}';
+    }
 }
