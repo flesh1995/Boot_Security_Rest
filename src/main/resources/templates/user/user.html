@@ -27,7 +27,7 @@
                 <td th:utext="${user.email}"></td>
                 <td th:utext="${user.password}"></td>
                 <td><div th:each="role : ${user.getRoles()}">
-                    <div th:utext="${role.getName()}"> </div>
+                    <div th:utext="${role.toString()}"> </div>
                 </div></td>
              </tr>
         </table>
