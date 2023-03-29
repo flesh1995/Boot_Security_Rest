@@ -37,51 +37,101 @@
     </div>
 </header>
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">Панель администратора</h1>
-</div>
-<tr>
-    <div align="center">
-        <h2>Список пользователей</h2>
-        <table border="1" cellpadding="5">
-            <tr>
-                <th width="50">Id</th>
-                <th width="100">Name</th>
-                <th width="100">LastName</th>
-                <th width="50">Age</th>
-                <th width="150">Email</th>
-                <th width="150">Password</th>
-                <th width="50">EDIT</th>
-                <th width="50">DELETE</th>
-                <th width="100">Roles</th>
-            </tr>
-            <tr th:each="user : ${users}">
-                <td th:utext="${user.id}"></td>
-                <td th:utext="${user.userName}"></td>
-                <td th:utext="${user.lastname}"></td>
-                <td th:utext="${user.age}"></td>
-                <td th:utext="${user.email}"></td>
-                <td th:utext="${user.password}"></td>
-                <td><div th:each="role : ${user.getRoles()}">
-                    <div th:utext="${role.toString()}"></div>
-                </div></td>
-                <td><form th:action="@{/admin/edit/{id}(id=${user.getId()})}">
-                    <input type="submit" value="Edit user">
-                    </form>
-                </td>
-                <td><form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
-                    <input type="submit" value="Delete user">
-                    </form>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <form action="admin/add" target="_blank">
-            <button>Создать пользователя</button>
-        </form>
-        </br>
+<!--Боковое меню-->
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <span data-feather="users"></span>
+                            ADMIN
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <span data-feather="users"></span>
+                            USER
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+<!--Панель-->
+<main role="main" class="col-9 ml-sm-auto col-lg-10 px-4">
+    <div class="tab-content" id="v-pills-tabContent">
+        <h1 class="h1">Панель администратора</h1>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-show"
+                    role="tab" aria-controls="nav-home" aria-selected="true">User table</a>
+                <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-add"
+                    role="tab" aria-controls="nav-profile" aria-selected="false">New User</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-show" role="tabpanel"
+                 aria-labelledby="nav-home-tab">
+                <div class="card">
+                    <h5 class="card-header">Список пользователей</h5>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th width="50">Id</th>
+                            <th width="100">Name</th>
+                            <th width="100">LastName</th>
+                            <th width="50">Age</th>
+                            <th width="150">Email</th>
+                            <th width="150">Password</th>
+                            <th width="100">Roles</th>
+                            <th width="50">EDIT</th>
+                            <th width="50">DELETE</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:utext="${user.id}"></td>
+                            <td th:utext="${user.userName}"></td>
+                            <td th:utext="${user.lastname}"></td>
+                            <td th:utext="${user.age}"></td>
+                            <td th:utext="${user.email}"></td>
+                            <td th:utext="${user.password}"></td>
+                            <td><div th:each="role : ${user.getRoles()}">
+                                <div th:utext="${role.toString()}"></div>
+                            </div></td>
+                            <td><button
+                                    style="background-color: dodgerblue; color: white"
+                                    id="edit_button"
+                                    th:action="@{/admin/edit/{id}(id=${user.getId()})}">
+                                Edit
+                            </button>
+                            </td>
+                            <td><button
+                                    style="background-color: red; color: white"
+                                    id="delete_button"
+                                    th:method="DELETE"
+                                    th:action="@{/admin/{id}(id=${user.getId()})}">
+                                Delete
+                            </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="tab-pane fade show active" id="nav-add" role="tabpanel"-->
+<!--                 aria-labelledby="nav-home-tab">-->
+            <div class="modal fade" id="nav-add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>
     </div>
-    <a type="submit" href="/logout">Выход из текущей сессии</a>
+</div>
+</main>
+</div>
+</div>
+
 </body>
 </html>
 
