@@ -28,6 +28,7 @@ public class AdminController {
         User user = (User) authentication.getPrincipal();
         model.addAttribute("userAdmin", serviceUser.findUser(user.getId()));
         model.addAttribute("users", serviceUser.userShow());
+        model.addAttribute("userAdd", new User());
         return "admin/show";
     }
     @GetMapping("/add")
