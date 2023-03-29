@@ -8,21 +8,35 @@
     <title>Панель администратора</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
-    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <header>
+<!--    Верхняя панель-->
     <div>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-<!--        <th:block class="font-weight-normal" th:text="${user.getEmail()}"></th:block>-->
-        <p class="navbar-brand"> with roles: ADMIN USER</p>
-        <a class="btn btn-outline-primary" href="/logout">Выход из текущей сессии</a>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <div class="navbar-brand col-sm-2 col-md-10 px-2 mt-0">
+            <b th:text="${userAdmin.email}">Почта админа</b>
+            <span>with roles: </span>
+            <span th:each="role : ${userAdmin.getRoles()}"
+                  th:utext="${role.toString() + ' '}">
+            </span>
+        </div>
+<!--Logout-->
+        <ul class="navbar-nav px-0">
+            <form th:action="@{/logout}" method="post">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end fixed-top">
+                    <button class="text-muted btn btn-dark" type="submit">Выход из текущей сессии</button>
+                </div>
+            </form>
+        </ul>
     </nav>
     </div>
 </header>
+
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Панель администратора</h1>
 </div>
