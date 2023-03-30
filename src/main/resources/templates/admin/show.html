@@ -20,13 +20,11 @@
         <div class="navbar-brand col-sm-2 col-md-10 px-2 mt-0">
             <b th:text="${userAdmin.email}">Почта админа</b>
             <span>with roles: </span>
-            <span th:each="role : ${userAdmin.getRoles()}"
-                  th:utext="${role.toString() + ' '}">
-            </span>
+            <span th:each="role : ${userAdmin.getRoles()}" th:utext="${role.toString() + ' '}"> </span>
         </div>
 <!--Logout-->
         <ul class="navbar-nav px-0">
-            <form th:action="@{/logout}" method="post">
+            <form th:action="@{/logout}" method="POST">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end fixed-top">
                     <button class="text-muted btn btn-dark" type="submit">Выход из текущей сессии</button>
                 </div>
@@ -43,16 +41,10 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin">
-                            <span data-feather="users"></span>
-                            ADMIN
-                        </a>
+                        <a class="nav-link" href="/admin"> <span data-feather="users"></span> ADMIN </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin">
-                            <span data-feather="users"></span>
-                            USER
-                        </a>
+                        <a class="nav-link" href="/admin"> <span data-feather="users"></span> USER </a>
                     </li>
                 </ul>
             </div>
@@ -64,9 +56,9 @@
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-show"
-                    role="tab" aria-controls="nav-home" aria-selected="true">User table</a>
+                    role="tab" aria-controls="nav-home" aria-selected="false">Таблица пользователей</a>
                 <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-add"
-                    role="tab" aria-controls="nav-profile" aria-selected="false">New User</a>
+                    role="tab" aria-controls="nav-profile" aria-selected="false">Создать нового пользователя</a>
             </div>
         </nav>
 <!--Таблица Юзеров        -->
@@ -122,7 +114,7 @@
                                             </div>
                                         <div class="modal-body">
                                             <div class="row justify-content-center align-items-center text-center">
-                                                <form th:action="@{/admin/{id}(id=${user.id})}" th:method="PATCH" th:object="${userAdd}">
+                                                <form th:action="@{/admin/edit/{id}(id=${user.id})}" th:method="PATCH" th:object="${userAdd}">
                                                     <div class="form-group">
                                                         <label for="id"><b>Id</b></label>
                                                         <input type="text" class="form-control" id="id" th:value="${user.id}" readonly/>
@@ -187,34 +179,34 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row justify-content-center align-items-center text-center">
-                                                    <form th:action="@{/admin/{id}(id=${user.id})}" th:method="DELETE" th:object="${user}">
+                                                    <form th:action="@{/admin/delete/{id}(id=${user.id})}" th:method="DELETE" th:object="${user}">
                                                         <div class="form-group">
                                                             <label for="id"><b>Id</b></label>
-                                                            <input type="text" th:value="${user.id}" readonly/>
+                                                            <input type="text" class="form-control" th:value="${user.id}" readonly/>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="userName"><b>FirstName</b></label>
-                                                            <input type="text"  th:value="${user.userName}" readonly/>
+                                                            <input type="text"  class="form-control" th:value="${user.userName}" readonly/>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="lastname"><b>LasName</b></label>
-                                                            <input type="text" th:value="${user.lastname}" readonly/>
+                                                            <input type="text" class="form-control" th:value="${user.lastname}" readonly/>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="age"><b>Age</b></label>
-                                                            <input type="number"  th:value="${user.age}" readonly/>
+                                                            <input type="number" class="form-control" th:value="${user.age}" readonly/>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="password"><b>Password</b></label>
-                                                            <input type="password" readonly/>
+                                                            <input type="password" class="form-control" th:value="${user.password}"readonly/>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="email"><b>Email</b></label>
-                                                            <input type="text" th:value="${user.email}" readonly/>
+                                                            <input type="text" class="form-control" th:value="${user.email}" readonly/>
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <label>Role</label>
+                                                            <label for="role"><b>Role</b></label>
                                                             <div th:each="role : ${user.getRoles()}">
                                                                 <div th:utext="${role.toString()}"></div>
                                                             </div>
@@ -237,10 +229,58 @@
             </div>
 <!--            <div class="tab-pane fade show active" id="nav-add" role="tabpanel"-->
 <!--                 aria-labelledby="nav-home-tab">-->
-            <div class="modal fade" id="nav-add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        ...
+            <div class="tab-content" id="nav-tabContent1">
+                <div class="tab-pane fade show active" id="nav-add" role="tabpanel"
+                     aria-labelledby="nav-home-tab">
+                    <div class="card">
+                        <h5 class="card-header">Добавление нового пользователя</h5>
+                        <div class="modal-body">
+                            <div class="row justify-content-center align-items-center text-center">
+                                <form th:action="@{/admin/add}" th:method="POST" th:object="${userAdd}">
+                                    <div class="form-group">
+                                        <label for="userName"><b>Введите имя</b></label>
+                                        <input type="text" class="form-control" th:field="*{userName}" id="userName1"/>
+                                        <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors = "*{userName}">Name error</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="lastname"><b>Введите фамилию</b></label>
+                                        <input type="text" class="form-control" th:field="*{lastname}" id="lastname1"/>
+                                        <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors = "*{lastname}">LastName error</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password"><b>Введите пароль</b></label>
+                                        <input type="text" class="form-control" th:field="*{password}" id="password1"/>
+                                        <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors = "*{password}">Password error</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="age"><b>Введите возраст</b></label>
+                                        <input type="number" class="form-control" th:field="*{age}" id="age1"/>
+                                        <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors = "*{age}">Age error</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email"><b>Введите адрес электронной почты</b></label>
+                                        <input type="text" class="form-control" th:field="*{email}" id="email1"/>
+                                        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="role1">Выберите роль</label>
+                                        <label for="role1"></label>
+                                        <select th:field="*{roles}" size="2" multiple class="form-control" id="role1">
+                                            <option th:value="ADMIN">ADMIN</option>
+                                            <option th:value="USER">USER</option>
+                                        </select>
+                                    </div>
+
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                    <button type="submit" class="btn btn-primary">Создать</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
         </div>

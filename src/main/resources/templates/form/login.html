@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="container">
-  <form class="form-signin" method="post" action="/process_login">
+  <form class="form-signin" method="POST" action="/process_login">
     <h2 class="form-signin-heading">Пожалуйста, введите почту и пароль</h2>
     <p>
       <label for="username" class="sr-only">Email</label>
@@ -24,36 +24,67 @@
       <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
     </p>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Вход на портал</button>
-    <a class="btn btn-lg btn-primary btn-block" type="submit" href="/form/registration">Зарегистрироваться на сайте</a>
+
+    <!-- Button trigger modal registration-->
+    <button type="button" class="btn btn-lg btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
+      Зарегистрироваться на сайте
+    </button>
   </form>
 </div>
+<!--    <div th:if="${param.error}" style="color: red">-->
+<!--      Неправильная почта и пароль-->
+<!--    </div>-->
+    <!-- Modal Registration-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Регистрация нового пользователя</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row justify-content-center align-items-center text-center">
+            <form th:method="POST" th:action="@{/form/registration}" th:object="${user}">
+              <div class="form-group">
+                <label for="userName"><b>Введите имя</b></label>
+                <input type="text" class="form-control" th:field="*{userName}" id="userName1"/>
+                <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors = "*{userName}">Name error</div>
+              </div>
 
+              <div class="form-group">
+                <label for="lastname"><b>Введите фамилию</b></label>
+                <input type="text" class="form-control" th:field="*{lastname}" id="lastname"/>
+                <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors = "*{lastname}">LastName error</div>
+              </div>
 
+              <div class="form-group">
+                <label for="password"><b>Введите пароль</b></label>
+                <input type="text" class="form-control" th:field="*{password}" id="password1"/>
+                <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors = "*{password}">Password error</div>
+              </div>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Запустить модальное окно
-</button>
+              <div class="form-group">
+                <label for="age"><b>Введите возраст</b></label>
+                <input type="number" class="form-control" th:field="*{age}" id="age"/>
+                <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors = "*{age}">Age error</div>
+              </div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+              <div class="form-group">
+                <label for="email"><b>Введите адрес электронной почты</b></label>
+                <input type="text" class="form-control" th:field="*{email}" id="email"/>
+                <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+            <button type="button" class="btn btn-primary">Завершить регистрацию</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
