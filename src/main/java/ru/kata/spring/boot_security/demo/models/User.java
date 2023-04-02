@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,20 +44,22 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
     public User() {
     }
     public User(String userName, String lastname) {
         this.userName = userName;
         this.lastname = lastname;
     }
-    public User(int id, String userName, String lastname, int age, String email, String password) {
+
+    public User(int id, String userName, String lastname, int age, String email, String password, List<Role> roles) {
         this.id = id;
         this.userName = userName;
         this.lastname = lastname;
         this.age = age;
         this.email = email;
         this.password = password;
+        this.roles = roles;
     }
     public int getId() {
         return id;
@@ -102,11 +105,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 

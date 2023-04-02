@@ -39,32 +39,30 @@
     <div class="row">
         <nav class="col-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
-                <ul class="nav flex-column">
+                <ul class="nav nav-pills flex-column mb-2">
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin"> <span data-feather="users"></span> ADMIN </a>
+                        <a class="nav-link active" type="button" href="/admin" data-toggle="pill"> ADMIN </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin"> <span data-feather="users"></span> USER </a>
+                        <a class="nav-link" type="button" href="/user" data-toggle="pill"> USER </a>
                     </li>
                 </ul>
             </div>
         </nav>
 <!--Панель-->
 <main role="main" class="col-9 ml-sm-auto col-lg-10 px-4">
-    <div class="tab-content" id="v-pills-tabContent">
+    <div class="tab-pane fade show active" id="v-pills-tabContent" role="tabpanel">
         <h1 class="h1">Панель администратора</h1>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-show"
-                    role="tab" aria-controls="nav-home" aria-selected="false">Таблица пользователей</a>
-                <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-add"
-                    role="tab" aria-controls="nav-profile" aria-selected="false">Создать нового пользователя</a>
+                <a class="nav-link active" type="button" id="nav-show-tab" data-toggle="tab" data-target="#nav-show" role="tab" aria-controls="nav-show" aria-selected="true">Таблица пользователей</a>
+                <a class="nav-link" type="button" id="nav-add-tab" data-toggle="tab"  data-target="#nav-add" role="tab" aria-controls="nav-add" aria-selected="false">Создать нового пользователя</a>
             </div>
         </nav>
 <!--Таблица Юзеров        -->
-        <div class="tab-content" id="nav-tabContent">
+        <div class="tab-content" id="tableUsers">
             <div class="tab-pane fade show active" id="nav-show" role="tabpanel"
-                 aria-labelledby="nav-home-tab">
+                 aria-labelledby="nav-show-tab">
                 <div class="card">
                     <h5 class="card-header">Список пользователей</h5>
                     <div class="card-body">
@@ -97,18 +95,17 @@
                             <td><button
                                     style="background-color: dodgerblue; color: white"
                                     data-toggle="modal"
-                                    th:attr="data-target=${'#edituser'+ user.id}"
+                                    th:attr="data-target=${'#edit'+ user.id}"
                                     data-row="${user}">
                                     Edit
                                 </button>
-                                <div class="modal fade" th:id="${'edituser'+ user.id}"
+                                <div class="modal fade" th:id="${'edit'+ user.id}"
                                      tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Редактирование пользователя</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -141,11 +138,10 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label for="role">Role</label>
-                                                        <label for="role"></label>
-                                                        <select th:field="*{roles}" size="2" multiple class="form-control" id="role">
-                                                        <option th:value="ADMIN">ADMIN</option>
-                                                        <option th:value="USER">USER</option>
+                                                        <label for="role1">Role</label>
+                                                        <label for="role1"></label>
+                                                        <select th:field="*{roles}" size="2" multiple class="form-control" id="role1">
+                                                            <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role}"></option>
                                                         </select>
                                                     </div>
 
@@ -162,11 +158,11 @@
                             <td><button
                                     style="background-color: red; color: white"
                                     data-toggle="modal"
-                                    th:attr="data-target=${'#deleteuser'+ user.id}"
+                                    th:attr="data-target=${'#delete'+ user.id}"
                                     data-row="${user}">
                                 Delete
                                 </button>
-                                <div class="modal fade" th:id="${'deleteuser'+ user.id}"
+                                <div class="modal fade" th:id="${'delete'+ user.id}"
                                      tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel_1" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -206,14 +202,14 @@
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <label for="role"><b>Role</b></label>
+                                                            <label><b>Role</b></label>
                                                             <div th:each="role : ${user.getRoles()}">
                                                                 <div th:utext="${role.toString()}"></div>
                                                             </div>
                                                         </div>
 
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                                        <button type="submit" class="btn btn-primary">Удалить</button>
+                                                        <button style="background-color: red; color: white" type="submit" class="btn btn-primary">Удалить</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -227,69 +223,61 @@
                     </div>
                 </div>
             </div>
-<!--            <div class="tab-pane fade show active" id="nav-add" role="tabpanel"-->
-<!--                 aria-labelledby="nav-home-tab">-->
-            <div class="tab-content" id="nav-tabContent1">
-                <div class="tab-pane fade show active" id="nav-add" role="tabpanel"
-                     aria-labelledby="nav-home-tab">
-                    <div class="card">
-                        <h5 class="card-header">Добавление нового пользователя</h5>
-                        <div class="modal-body">
-                            <div class="row justify-content-center align-items-center text-center">
-                                <form th:action="@{/admin/add}" th:method="POST" th:object="${userAdd}">
-                                    <div class="form-group">
-                                        <label for="userName"><b>Введите имя</b></label>
-                                        <input type="text" class="form-control" th:field="*{userName}" id="userName1"/>
-                                        <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors = "*{userName}">Name error</div>
-                                    </div>
+            <div class="tab-pane fade" id="nav-add" role="tabpanel"
+                 aria-labelledby="nav-add-tab">
+                <div class="card">
+                    <h5 class="card-header">Добавление нового пользователя</h5>
+                    <div class="modal-body">
+                        <div class="row justify-content-center align-items-center text-center">
+                            <form th:action="@{/admin/add}" th:method="POST" th:object="${userAdd}">
+                                <div class="form-group">
+                                    <label for="userName"><b>Введите имя</b></label>
+                                    <input type="text" class="form-control" th:field="*{userName}" id="userName1"/>
+                                    <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors = "*{userName}">Name error</div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="lastname"><b>Введите фамилию</b></label>
-                                        <input type="text" class="form-control" th:field="*{lastname}" id="lastname1"/>
-                                        <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors = "*{lastname}">LastName error</div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="lastname"><b>Введите фамилию</b></label>
+                                    <input type="text" class="form-control" th:field="*{lastname}" id="lastname1"/>
+                                    <div style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors = "*{lastname}">LastName error</div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="password"><b>Введите пароль</b></label>
-                                        <input type="text" class="form-control" th:field="*{password}" id="password1"/>
-                                        <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors = "*{password}">Password error</div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="password"><b>Введите пароль</b></label>
+                                    <input type="text" class="form-control" th:field="*{password}" id="password1"/>
+                                    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors = "*{password}">Password error</div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="age"><b>Введите возраст</b></label>
-                                        <input type="number" class="form-control" th:field="*{age}" id="age1"/>
-                                        <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors = "*{age}">Age error</div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="age"><b>Введите возраст</b></label>
+                                    <input type="number" class="form-control" th:field="*{age}" id="age1"/>
+                                    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors = "*{age}">Age error</div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="email"><b>Введите адрес электронной почты</b></label>
-                                        <input type="text" class="form-control" th:field="*{email}" id="email1"/>
-                                        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="email"><b>Введите адрес электронной почты</b></label>
+                                    <input type="text" class="form-control" th:field="*{email}" id="email1"/>
+                                    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors = "*{email}">Email error</div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="role1">Выберите роль</label>
-                                        <label for="role1"></label>
-                                        <select th:field="*{roles}" size="2" multiple class="form-control" id="role1">
-                                            <option th:value="ADMIN">ADMIN</option>
-                                            <option th:value="USER">USER</option>
-                                        </select>
-                                    </div>
-
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                                    <button type="submit" class="btn btn-primary">Создать</button>
-                                </form>
-                            </div>
+                                <div class="form-group">
+                                    <label for="role2">Выберите роль</label>
+                                    <label for="role2"></label>
+                                    <select th:field="*{roles}" size="2" multiple class="form-control" id="role2">
+                                        <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role}"></option>
+                                    </select>
+                                </div>
+                                <button style="background-color: green; color: white" type="submit" class="btn btn-primary">Создать нового пользователя</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-        </div>
+            </div>
     </div>
 </div>
 </main>
 </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
