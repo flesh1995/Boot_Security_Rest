@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = findByUserEmail(email);
-        Hibernate.initialize(user.getRoles());
+        user.getRoles();
         if (user.getEmail() == null) {
             System.out.println("Ничего нет");
             throw new UsernameNotFoundException("User not found!");

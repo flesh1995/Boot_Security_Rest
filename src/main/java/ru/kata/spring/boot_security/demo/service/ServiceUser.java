@@ -21,5 +21,4 @@ public interface ServiceUser {
     void registration(@Valid User user);
 
     List<Role> roleSet();
-
 }

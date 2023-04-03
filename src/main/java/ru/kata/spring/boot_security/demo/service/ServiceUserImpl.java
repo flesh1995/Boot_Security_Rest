@@ -11,6 +11,7 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,8 +47,8 @@ public class ServiceUserImpl implements ServiceUser {
         if(user.getRoles() == null) {
             user.setRoles(userRepository.getById(user.getId()).getRoles());
         }else {
-            List<Role> roles = user.getRoles().stream().map(role -> roleRepository.findByRole(role.getName()).get())
-                    .collect(Collectors.toList());
+            Set<Role> roles = user.getRoles().stream().map(role -> roleRepository.findByRole(role.getName()).get())
+                    .collect(Collectors.toSet());
             user.setRoles(roles);
         }
         userRepository.save(user);
@@ -58,8 +59,8 @@ public class ServiceUserImpl implements ServiceUser {
     public void update(int id, @Valid User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setId(id);
-        List<Role> roles = user.getRoles().stream().map(role -> roleRepository.findByRole(role.getName()).get())
-                    .collect(Collectors.toList());
+        Set<Role> roles = user.getRoles().stream().map(role -> roleRepository.findByRole(role.getName()).get())
+                .collect(Collectors.toSet());
         user.setRoles(roles);
         userRepository.save(user);
     }
@@ -71,8 +72,8 @@ public class ServiceUserImpl implements ServiceUser {
         if(user.getRoles() == null) {
             user.setRoles(userRepository.getById(user.getId()).getRoles());
         }else {
-            List<Role> roles = user.getRoles().stream().map(role -> roleRepository.findByRole(role.getName()).get())
-                    .collect(Collectors.toList());
+            Set<Role> roles = user.getRoles().stream().map(role -> roleRepository.findByRole(role.getName()).get())
+                    .collect(Collectors.toSet());
             user.setRoles(roles);
         }
         userRepository.save(user);
@@ -87,5 +88,4 @@ public class ServiceUserImpl implements ServiceUser {
     public List<Role> roleSet() {
         return roleRepository.findAll();
     }
-
 }
