@@ -14,7 +14,8 @@ import ru.kata.spring.boot_security.demo.utill.UserValidator;
 import javax.validation.Valid;
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping ("/admin")
 public class AdminController {
 
     private final ServiceUser serviceUser;
@@ -25,18 +26,28 @@ public class AdminController {
         this.userValidator = userValidator;
     }
 
-    @RequestMapping ("/admin")
-    public String snowDbUsers(Model model, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        model.addAttribute("userAdmin", serviceUser.findUser(user.getId()));
-        model.addAttribute("users", serviceUser.userShow());
-        model.addAttribute("userAdd", new User());
-        List<Role> roles = serviceUser.roleSet();
-        model.addAttribute("allRoles", roles);
-        return "show";
+    @GetMapping()
+    public List<User> getUsers() {
+        return serviceUser.userShow();
     }
 
-    @PostMapping("/admin/add")
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable("id") int id) {
+        return serviceUser.findUser(id);
+    }
+
+//    @RequestMapping ()
+//    public String snowDbUsers(Model model, Authentication authentication) {
+//        User user = (User) authentication.getPrincipal();
+//        model.addAttribute("userAdmin", serviceUser.findUser(user.getId()));
+//        model.addAttribute("users", serviceUser.userShow());
+//        model.addAttribute("userAdd", new User());
+//        List<Role> roles = serviceUser.roleSet();
+//        model.addAttribute("allRoles", roles);
+//        return "show";
+//    }
+
+    @PostMapping("/add")
     public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -45,14 +56,14 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PatchMapping("/admin/edit/{id}")
+    @PatchMapping("/edit/{id}")
     public String edit(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors()) {
             return "/show";}
         serviceUser.update(id, user);
         return "redirect:/admin";
     }
-    @DeleteMapping("/admin/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id) {
         serviceUser.delete(id);
         return "redirect:/admin";
