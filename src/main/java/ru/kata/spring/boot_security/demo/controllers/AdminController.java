@@ -1,15 +1,12 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.ServiceUser;
 import ru.kata.spring.boot_security.demo.utill.UserValidator;
-
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,47 +22,37 @@ public class AdminController {
         this.serviceUser = serviceUser;
         this.userValidator = userValidator;
     }
-
     @GetMapping()
-    public List<User> getUsers() {
-        return serviceUser.userShow();
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> allUsers = serviceUser.userShow();
+        if (allUsers != null && !allUsers.isEmpty()) {
+            return new ResponseEntity<>(allUsers, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
-
+    @PostMapping
+    public ResponseEntity<User> create(@Valid @RequestBody User user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+        serviceUser.add(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
     @GetMapping("/{id}")
     public User getUser(@PathVariable("id") int id) {
         return serviceUser.findUser(id);
     }
-
-//    @RequestMapping ()
-//    public String snowDbUsers(Model model, Authentication authentication) {
-//        User user = (User) authentication.getPrincipal();
-//        model.addAttribute("userAdmin", serviceUser.findUser(user.getId()));
-//        model.addAttribute("users", serviceUser.userShow());
-//        model.addAttribute("userAdd", new User());
-//        List<Role> roles = serviceUser.roleSet();
-//        model.addAttribute("allRoles", roles);
-//        return "show";
-//    }
-
-    @PostMapping("/add")
-    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-        userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "/show";}
-        serviceUser.add(user);
-        return "redirect:/admin";
-    }
-
     @PatchMapping("/edit/{id}")
-    public String edit(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @PathVariable("id") int id) {
+    public ResponseEntity<User> edit(@Valid @RequestBody User user, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors()) {
-            return "/show";}
+            return new ResponseEntity(HttpStatus.EXPECTATION_FAILED);}
         serviceUser.update(id, user);
-        return "redirect:/admin";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         serviceUser.delete(id);
-        return "redirect:/admin";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

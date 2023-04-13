@@ -1,10 +1,12 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.ServiceUser;
@@ -28,13 +30,13 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/login/registration")
-    public String perform(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    @PostMapping
+    public ResponseEntity<User> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "/login";
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
         serviceUser.registration(user);
-        return "redirect:/login";
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
