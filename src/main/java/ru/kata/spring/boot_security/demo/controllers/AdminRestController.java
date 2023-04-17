@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping ("/admin")
+@RequestMapping ("/api/admin")
 public class AdminRestController {
 
     private final ServiceUser serviceUser;
@@ -39,18 +39,23 @@ public class AdminRestController {
         serviceUser.add(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    @GetMapping("/{id}")
+
+//    @GetMapping("{id}")
+//    public ResponseEntity<User> getUser(@PathVariable("id") int id) {
+//        return new ResponseEntity<>(serviceUser.findUser(id), HttpStatus.OK);
+//    }
+    @GetMapping("{id}")
     public User getUser(@PathVariable("id") int id) {
         return serviceUser.findUser(id);
     }
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("{id}")
     public ResponseEntity<User> edit(@Valid @RequestBody User user, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(HttpStatus.EXPECTATION_FAILED);}
         serviceUser.update(id, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         serviceUser.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
