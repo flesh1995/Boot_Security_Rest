@@ -23,8 +23,9 @@ const allDifferentUser = (users) => {
     updateDataBase.innerHTML = stringInfoUser;
 }
 
-function getAllUsers() { fetch(url).then(respon => respon.json()).then(tableAllUsers => updateDataBase(tableAllUsers)) }
-getAllUsers();
+function getAllUsers() { fetch(url).
+    then(response => response.json()).then(tableAllUsers => updateDataBase(tableAllUsers)) }
+    getAllUsers();
 
 createUser.addEventListener('submit', event => {
     event.preventDefault();
@@ -93,6 +94,7 @@ function editUser(id) {
 }
 async function editUserNow() {
     let idDif = document.getElementById("idEdit").value;
+    let userNameDif = document.getElementById("lastnameEdit").value;
     let lastnameDif = document.getElementById("lastnameEdit").value;
     let ageDif = document.getElementById("ageEdit").value;
     let emailDif = document.getElementById("emailEdit").value;
@@ -150,7 +152,7 @@ async function deleteUserNow() {
     getAllUsers();
     buttonClose.click();
 }
-
+// Отображение информации о пользователях
 
 
 // Отображение информации о пользователе
