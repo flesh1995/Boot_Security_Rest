@@ -30,6 +30,7 @@ public class AdminRestController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
     @PostMapping
     public ResponseEntity<User> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
@@ -40,24 +41,25 @@ public class AdminRestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-//    @GetMapping("{id}")
-//    public ResponseEntity<User> getUser(@PathVariable("id") int id) {
-//        return new ResponseEntity<>(serviceUser.findUser(id), HttpStatus.OK);
-//    }
     @GetMapping("{id}")
-    public User getUser(@PathVariable("id") int id) {
-        return serviceUser.findUser(id);
+    public ResponseEntity<User> getUser(@PathVariable("id") int id) {
+        return new ResponseEntity<>(serviceUser.findUser(id), HttpStatus.OK);
     }
+
     @PatchMapping("{id}")
     public ResponseEntity<User> edit(@Valid @RequestBody User user, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity(HttpStatus.EXPECTATION_FAILED);}
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);}
         serviceUser.update(id, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         serviceUser.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
+
+
+

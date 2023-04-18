@@ -79,7 +79,6 @@ function controlRoleUser(roleUser) {
     return roles;
 }
 
-
 function editUser(id) {
     fetch(url + '/' + id, {
         headers: {
@@ -120,20 +119,27 @@ async function editUserNow() {
     document.getElementById("editModalCloseButton").click();
 }
 
+// Удаление пользователя
+const deleteModalJS = document.getElementById('deleteModal');
+const buttonClose = document.getElementById('deleteModalCloseButton');
+const deleteFormJS = document.getElementById('DeleteUser');
 function deleteUser(id) {
-    fetch(url + '/' + id, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json; charset=UTF-8'
-        }
-    }).then(respon => {
-        respon.json().then(user => {
-            document.getElementById('idEdit').value = user.id
-        })
+    deleteFormJS.addEventListener("submit", event => {
+        event.preventDefault();
+        fetch(url + deleteFormJS.id.value, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
+            }
+        }).then(response => response.json()
+            .then(user => {
+                document.getElementById('idEdit').value = user.id
+            }));
     });
 }
 async function deleteUserNow() {
-    await fetch(url + '/' + document.getElementById('idDelete').value, {
+    await fetch(url + document.getElementById('idDelete').value, {
         method: 'DELETE',
         headers: {
             'Accept': 'application/json',
@@ -142,6 +148,35 @@ async function deleteUserNow() {
         body: JSON.stringify(document.getElementById('idDelete').value)
     })
     getAllUsers();
-    document.getElementById('deleteModalCloseButton').click();
+    buttonClose.click();
 }
 
+
+
+// Отображение информации о пользователе
+const urlUser = "http://localhost:8080/user/loginUser";
+const table = document.getElementById('userPanelTable');
+const headerEmailJS = document.getElementById('headerEmail');
+const headerRoleJS = document.getElementById('headerRole');
+function userPageTable() {
+    fetch(urlUser)
+        .then(response => response.json())
+        .then(userPage => {
+            headerEmailJS.append(userPage.email);
+            let roles = userPage.roles.map(role => " " + role.name.substring(5));
+            headerRoleJS.append(roles);
+            let user = '';
+            user +=
+                `<tr>
+                    <td>${userPage.id}</td>
+                    <td>${userPage.userName}</td>
+                    <td>${userPage.lastname}</td>
+                    <td>${userPage.age}</td>
+                    <td>${userPage.email}</td> 
+                    <td>${userPage.password}</td> 
+                    <td>${roles}</td>
+                </tr>`;
+            table.innerHTML = user;
+        })
+}
+userPageTable();
