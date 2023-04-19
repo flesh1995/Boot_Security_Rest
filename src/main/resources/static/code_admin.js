@@ -1,47 +1,52 @@
-const url = 'http://localhost:8080/api/admin';
-const updateDataBase = document.getElementById("tableUsers");
-const createUser = document.getElementById("newUser");
+const url = 'http://localhost:8080/api';
+const updateDataBase = document.getElementById("usersAllTable");
+const headerEmailJS = document.getElementById('headerEmail');
+const headerRoleJS = document.getElementById('headerRole');
 
-const allDifferentUser = (users) => {
-    let stringInfoUser = "";
-    users.forEach((user) => {
-        stringInfoUser +=
-        `<tr>
-            <td>${user.id}</td>
-            <td id=${'userName'+user.id}>${user.userName}</td>
-            <td id=${'lastname'+user.id}>${user.lastname}</td>
-            <td id=${'age'+user.id}>${user.age}</td>
-            <td id=${'email'+user.id}>${user.email}</td>
-            <td id=${'password'+user.id}>${user.password}</td>
-            <td id=${'role'+user.id}>${user.roles.map(p => p.name).join('')}</td>
 
-            <td> <button data-toggle="modal" data-target="#edit" onClick="edit(${user.id})"> Edit </button></td>
-            <td> <button data-toggle="modal" data-target="#delete" onClick="delete(${user.id})"> Delete </button></td>
-        </tr>`
-    })
-
-    updateDataBase.innerHTML = stringInfoUser;
+// Отображение всех пользователей
+function getAllUsers() {
+    fetch(url)
+        .then(response => response.json())
+        .then(tableAllUsers => {
+            let stringInfoUser = "";
+            tableAllUsers.forEach(user => {
+                stringInfoUser +=
+                    `<tr>
+                        <td>${user.id}</td>
+                        <td>${user.userName}</td>
+                        <td>${user.lastname}</td>
+                        <td>${user.age}</td>
+                        <td>${user.email}</td>
+                        <td>${user.password}</td>
+                        <td>${user.roles.map(p => p.name.substring(5)).join(',')}</td>
+            
+                        <td> <button style="background-color: dodgerblue; color: white" 
+                        data-toggle="modal" data-target="#edit" onclick="edit(${user.id})"> Edit </button></td>
+                        <td> <button style="background-color: red; color: white" 
+                        data-toggle="modal" data-target="#delete" onclick="delete(${user.id})"> Delete </button></td>
+                    </tr>`
+            })
+            updateDataBase.innerHTML = stringInfoUser;
+            }
+        ).catch(function(error) {
+        console.log(error);
+        });
 }
+getAllUsers();
 
-function getAllUsers() { fetch(url).
-    then(response => response.json()).then(tableAllUsers => updateDataBase(tableAllUsers)) }
-    getAllUsers();
-
-createUser.addEventListener('submit', event => {
+// Создание нового пользователя
+const createUser = document.getElementById("newUser");
+const createUserForm = document.getElementById('newFormUser')
+createUserForm.addEventListener('submit', event => {
     event.preventDefault();
-    let userNameJS = document.getElementById("userNameNew").value;
-    let lastnameJS = document.getElementById("lastnameNew").value;
-    let ageJS = document.getElementById("ageNew").value;
-    let emailJS = document.getElementById("emailNew").value;
-    let passwordJS = document.getElementById("passwordNew").value;
-    let roleJS = controlRoleUser(Array.from(document.getElementById("roleNew").selectedOptions).map(role => role.value));
     let addUser = {
-        userName: userNameJS,
-        lastname: lastnameJS,
-        age: ageJS,
-        password: passwordJS,
-        email: emailJS,
-        roles: roleJS
+        userName: document.getElementById("userNameNew").value,
+        lastname: document.getElementById("lastnameNew").value,
+        age: document.getElementById("ageNew").value,
+        password: document.getElementById("passwordNew").value,
+        email: document.getElementById("emailNew").value,
+        roles: controlRoleUser(Array.from(document.getElementById("roleNew").selectedOptions).map(role => role.value))
     }
     fetch(url, {
         method: 'POST',
@@ -50,18 +55,17 @@ createUser.addEventListener('submit', event => {
             'Content-Type': 'application/json; charset=UTF-8'
         },
         body: JSON.stringify(addUser)
-    }).then(updateDB => {
+    }).then(response => response.json())
+        .then(updateDB => {
         const list = [];
         list.push(updateDB);
         getAllUsers(updateDB);
-    }).then(() => {
-        document.getElementById('newFormUser').click();
-    })
+    }).then(() => createUserForm.click())
 })
 
 function controlRoleUser(roleUser) {
     let roles = [];
-    if (roleUser === "ADMIN") {
+    if ("ADMIN" in roleUser) {
         roles.push({
             "id": 1,
             "name": "ROLE_ADMIN",
@@ -69,7 +73,7 @@ function controlRoleUser(roleUser) {
             "authority": "ROLE_ADMIN"
         });
     }
-    if (roleUser === "USER") {
+    if ("USER" in roleUser) {
         roles.push({
             "id": 2,
             "name": "ROLE_USER",
@@ -80,6 +84,10 @@ function controlRoleUser(roleUser) {
     return roles;
 }
 
+// Редактирование пользователя
+const EditId = document.getElementById('idEdit');
+const buttonCloseEdit = document.getElementById('editModalCloseButton');
+const editFormJS = document.getElementById('EditUser');
 function editUser(id) {
     fetch(url + '/' + id, {
         headers: {
@@ -93,24 +101,17 @@ function editUser(id) {
     });
 }
 async function editUserNow() {
-    let idDif = document.getElementById("idEdit").value;
-    let userNameDif = document.getElementById("lastnameEdit").value;
-    let lastnameDif = document.getElementById("lastnameEdit").value;
-    let ageDif = document.getElementById("ageEdit").value;
-    let emailDif = document.getElementById("emailEdit").value;
-    let passwordDif = document.getElementById("passwordEdit").value;
-    let roleDif = controlRoleUser(Array.from(document.getElementById("roleEdit").selectedOptions).map(role => role.value));
     let userEditDB = {
-        id: idDif,
-        userName: userNameDif,
-        lastname: lastnameDif,
-        age: ageDif,
-        password: passwordDif,
-        email: emailDif,
-        roles: roleDif
+        id: document.getElementById("idEdit").value,
+        userName: document.getElementById("userNameEdit").value,
+        lastname: document.getElementById("lastnameEdit").value,
+        age: document.getElementById("ageEdit").value,
+        password: document.getElementById("passwordEdit").value,
+        email: document.getElementById("emailEdit").value,
+        roles: controlRoleUser(Array.from(document.getElementById("roleEdit").selectedOptions).map(role => role.value))
     }
     await fetch(url, {
-        method: "PUTCH",
+        method: "PATCH",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json; charset=UTF-8'
@@ -121,45 +122,50 @@ async function editUserNow() {
     document.getElementById("editModalCloseButton").click();
 }
 
-// Удаление пользователя
-const deleteModalJS = document.getElementById('deleteModal');
+
+// // Удаление пользователя
+const deleteId = document.getElementById('idDelete');
 const buttonClose = document.getElementById('deleteModalCloseButton');
-const deleteFormJS = document.getElementById('DeleteUser');
-function deleteUser(id) {
-    deleteFormJS.addEventListener("submit", event => {
-        event.preventDefault();
-        fetch(url + deleteFormJS.id.value, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=UTF-8'
-            }
-        }).then(response => response.json()
-            .then(user => {
-                document.getElementById('idEdit').value = user.id
-            }));
-    });
-}
-async function deleteUserNow() {
-    await fetch(url + document.getElementById('idDelete').value, {
-        method: 'DELETE',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: JSON.stringify(document.getElementById('idDelete').value)
-    })
-    getAllUsers();
-    buttonClose.click();
-}
+const deleteFormJS = document.forms['DeleteUser'];
+const farmat = document.getElementById('delete')
+// function deleteUser() {
+//     farmat.addEventListener("submit", event => {
+//         event.preventDefault();
+//         fetch(url + deleteId.value, {
+//             method: 'DELETE',
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/json; charset=UTF-8'
+//             },
+//             body: JSON.stringify(deleteId.value)
+//         }).then(response => response.json()
+//             .then(async user => {
+//                 deleteId.value = user.id;
+//                 document.getElementById('userNameDelete').value = user.userName;
+//                 document.getElementById('lastnameDelete').value = user.lastname;
+//                 document.getElementById('ageDelete').value = user.age;
+//                 document.getElementById('passwordDelete').value = user.password;
+//                 document.getElementById('emailDelete').value = user.email;
+//             }).then(() => buttonClose.click())
+//         );
+//     });
+// }
+// deleteUser();
+
+
+// async function getUser(id) {
+//     let urlGet = "http://localhost:8080/api" + id;
+//     let response = await fetch(urlGet);
+//     return await response.json();
+// }
+
+
 // Отображение информации о пользователях
 
 
 // Отображение информации о пользователе
 const urlUser = "http://localhost:8080/user/loginUser";
 const table = document.getElementById('userPanelTable');
-const headerEmailJS = document.getElementById('headerEmail');
-const headerRoleJS = document.getElementById('headerRole');
 function userPageTable() {
     fetch(urlUser)
         .then(response => response.json())
@@ -180,5 +186,8 @@ function userPageTable() {
                 </tr>`;
             table.innerHTML = user;
         })
+        .catch(function(error) {
+            console.log(error);
+        });
 }
 userPageTable();

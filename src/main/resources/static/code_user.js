@@ -5,7 +5,7 @@ const headerRoleJS = document.getElementById('headerRole');
 function userPageTable() {
     fetch(url)
         .then(response => response.json())
-        .then(userPage => {
+        .then((userPage) => {
             headerEmailJS.append(userPage.email);
             let roles = userPage.roles.map(role => " " + role.name.substring(5));
             headerRoleJS.append(roles);
@@ -22,5 +22,8 @@ function userPageTable() {
                 </tr>`;
             table.innerHTML = user;
         })
+        .catch(function(error) {
+            console.log(error);
+        });
 }
 userPageTable();
