@@ -31,7 +31,7 @@ public class AdminRestController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<User> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -46,7 +46,7 @@ public class AdminRestController {
         return new ResponseEntity<>(serviceUser.findUser(id), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/edit/{id}")
     public ResponseEntity<User> edit(@Valid @RequestBody User user, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);}
@@ -54,7 +54,7 @@ public class AdminRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         serviceUser.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
