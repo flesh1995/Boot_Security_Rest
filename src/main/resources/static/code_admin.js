@@ -20,10 +20,10 @@ function getAllUsers() {
                         <td>${user.password}</td>
                         <td>${user.roles.map(p => p.name.substring(5)).join(',')}</td>
             
-                        <td> <button class="btn-edit-user" style="background-color: dodgerblue; color: white" 
-                        data-toggle="modal" data-target="#edit" data-id="${user.id}"> Edit </button></td>
-                        <td> <button class="btn-delete-user" style="background-color: red; color: white" 
-                        data-toggle="modal" data-target="#delete" data-id="${user.id}"> Delete </button></td>
+                        <td> <button class="btn-edit-user" name="edit" style="background-color: dodgerblue; 
+                        color: white" data-toggle="modal" data-target="#edit" id="${user.id}"> Edit </button></td>
+                        <td> <button class="btn-delete-user" name= "delete" style="background-color: red;
+                        color: white" data-toggle="modal" data-target="#delete" id="${user.id}"> Delete </button></td>
                     </tr>`
             })
             updateDataBase.innerHTML = stringInfoUser;
@@ -61,55 +61,131 @@ function userPageTable() {
 }
 userPageTable();
 
-// Создание нового пользователя
-// const createUser = document.getElementById("newUser");
-// const createUserForm = document.getElementById('newFormUser')
-// createUserForm.addEventListener('submit', event => {
-//     event.preventDefault();
-//     let addUser = {
-//         userName: document.getElementById("userNameNew").value,
-//         lastname: document.getElementById("lastnameNew").value,
-//         age: document.getElementById("ageNew").value,
-//         password: document.getElementById("passwordNew").value,
-//         email: document.getElementById("emailNew").value,
-//         roles: controlRoleUser(Array.from(document.getElementById("roleNew").selectedOptions).map(role => role.value))
-//     }
-//     fetch(url, {
-//         method: 'POST',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json; charset=UTF-8'
-//         },
-//         body: JSON.stringify(addUser)
-//     }).then(response => response.json())
-//         .then(updateDB => {
-//         const list = [];
-//         list.push(updateDB);
-//         getAllUsers(updateDB);
-//     }).then(() => createUserForm.click())
-// })
-//
-// function controlRoleUser(roleUser) {
-//     let roles = [];
-//     if ("ADMIN" in roleUser) {
-//         roles.push({
-//             "id": 1,
-//             "name": "ROLE_ADMIN",
-//             "users": null,
-//             "authority": "ROLE_ADMIN"
-//         });
-//     }
-//     if ("USER" in roleUser) {
-//         roles.push({
-//             "id": 2,
-//             "name": "ROLE_USER",
-//             "users": null,
-//             "authority": "ROLE_USER"
-//         });
-//     }
-//     return roles;
+
+// Функция для поиска пользователя по id.
+// async function getUser(id) {
+//     let urlSeach = url + id;
+//     let response = await fetch(urlSeach);
+//     return await response.json();
 // }
-//
+
+
+// Создание нового пользователя. Тут самое главное понять, для меня это было не очевидно (пока не почитал),
+// что querySelector ищет по тегу class, а не по id
+const createUserForm = document.querySelector('.newUser');
+const selectRoles = document.getElementById('roleNew');
+const buttonUserTable = document.getElementById('nav-show-tab')
+createUserForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let addUser = {
+        userName: document.getElementById("userNameNew").value,
+        lastname: document.getElementById("lastnameNew").value,
+        age: document.getElementById("ageNew").value,
+        password: document.getElementById("passwordNew").value,
+        email: document.getElementById("emailNew").value,
+        roles: controlRoleUser(Array.from(selectRoles.options).filter(option => option.selected).map(option => option.value))
+    }
+    fetch(url + "/create", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify(addUser)
+    })
+        .then(updateUserTable => {
+            const userAdd = [];
+            userAdd.push(updateUserTable);
+            getAllUsers(userAdd)
+        })
+        .then(() => buttonUserTable.click());
+
+})
+
+// Функция для вставки в JSON информации о выбранных ролях (если хочешь написать свою версию, то просто посмотри
+// в консоли на вывод пользователей. Там все очень понятно и легко). Затем почитай про методы над массивами в JS.
+// indexOf и includes, можно еще использовать find.
+function controlRoleUser(roleUser) {
+    let roles = [];
+    if (roleUser.includes("1")) {
+        roles.push({
+            "id": 1,
+            "name": "ROLE_ADMIN",
+            "users": null,
+            "authority": "ROLE_ADMIN"
+        });
+    }
+    if (roleUser.includes("2")) {
+        roles.push({
+            "id": 2,
+            "name": "ROLE_USER",
+            "users": null,
+            "authority": "ROLE_USER"
+        });
+    }
+    return roles;
+}
+
+
+const tableUse = document.querySelector('.tab-content');
+const delete_id = document.getElementById('idDelete');
+const delete_username = document.getElementById('userNameDelete');
+const delete_lastName = document.getElementById('lastnameDelete');
+const delete_age = document.getElementById('ageDelete');
+const delete_email = document.getElementById('emailDelete');
+const delete_password = document.getElementById('passwordDelete');
+const delete_role = document.getElementById('roleDelete');
+const edit_id = document.getElementById('idEdit');
+const edit_username = document.getElementById('userNameEdit');
+const edit_lastName = document.getElementById('lastnameEdit');
+const edit_age = document.getElementById('ageEdit');
+const edit_email = document.getElementById('emailEdit');
+const edit_password = document.getElementById('passwordEdit');
+const edit_role = document.getElementById('roleEdit');
+
+//Заполнение модальных окон редактирования и удаления. Тут самое главное узнать id пользователя.
+tableUse.addEventListener('click', (event) => {
+    event.preventDefault();
+    let userID = event.target.id;
+    let nameButton = event.target.name;
+    if (nameButton === "delete") {
+        fetch(url + "/" + userID, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
+            },
+        })
+            .then(responce => responce.json())
+            .then(user => {
+                delete_id.value = user.id;
+                delete_username.value = user.userName;
+                delete_lastName.value = user.lastname;
+                delete_age.value = user.age;
+                delete_email.value = user.email;
+                delete_password.value = user.password;
+                delete_role.value = user.roles.map(role => " " + role.name.substring(5));
+            })
+    } if (nameButton === "edit") {
+        fetch(url + "/" + userID, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
+            },
+        })
+            .then(responce => responce.json())
+            .then(user => {
+                edit_id.value = user.id;
+                edit_username.value = user.userName;
+                edit_lastName.value = user.lastname;
+                edit_age.value = user.age;
+                edit_email.value = user.email;
+                edit_password.value = user.password;
+                edit_role.value = user.roles.map(role => " " + role.name.substring(5));
+            })
+    }
+})
+
+
 // // Редактирование пользователя
 // const EditId = document.getElementById('idEdit');
 // const buttonCloseEdit = document.getElementById('editModalCloseButton');
@@ -150,29 +226,25 @@ userPageTable();
 
 
 // Удаление пользователя
-const deleteId = document.getElementById('idDelete');
-const buttonCloseDelete = document.getElementById('deleteModalCloseButton');
-const form = document.getElementById('DeleteUser');
-const deleteFormJS = document.forms["DeleteUser"];
-const farmat = document.getElementById('delete')
+const buttonDelete = document.querySelector('.deleteUser');
+const buttonDeleteClose = document.getElementById('deleteModalCloseButton');
 
-const deleteForm = document.getElementById('delete');
-const delete_id = document.getElementById('idDelete');
-const delete_username = document.getElementById('userNameDelete');
-const delete_lastName = document.getElementById('lastNameDelete');
-const delete_age = document.getElementById('ageDelete');
-const delete_email = document.getElementById('emailDelete');
-const delete_password = document.getElementById('passwordDelete');
-
-let formDelete = document.forms["DeleteUser"];
-
-
-
-// // Отображение информации о пользователях
-// async function getUser(id) {
-//     let url = "http://localhost:8080/api/" + id;
-//     let response = await fetch(url);
-//     return await response.json();
-// }
-
-
+buttonDelete.addEventListener('click', (event) => {
+    event.preventDefault();
+    let userID = event.target.id;
+    if (userID === "deleteModalButton"){
+        deleteUser();
+    }
+})
+async function deleteUser() {
+    await fetch(url + "/delete/" + delete_id.value, {
+        method: "DELETE",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify(delete_id.value)
+    });
+    getAllUsers()
+    buttonDeleteClose.click();
+}
