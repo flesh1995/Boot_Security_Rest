@@ -14,7 +14,7 @@ import ru.kata.spring.boot_security.demo.utill.UserValidator;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/loginreg")
 public class LoginRestController {
     private final ServiceUser serviceUser;
     private final UserValidator userValidator;
@@ -24,7 +24,7 @@ public class LoginRestController {
         this.userValidator = userValidator;
     }
 
-    @PostMapping
+    @PostMapping("/registration")
     public ResponseEntity<User> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
