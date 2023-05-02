@@ -14,7 +14,7 @@ import ru.kata.spring.boot_security.demo.utill.UserValidator;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/loginreg")
+@RequestMapping("/loginReg")
 public class LoginRestController {
     private final ServiceUser serviceUser;
     private final UserValidator userValidator;
